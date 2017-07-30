@@ -1,5 +1,5 @@
-Package: cusalaries
-Title: What the Package Does (one line, title case)
+Package: cupersonnel
+Title: Personnel data for the University of Colorado System 
 Version: 0.0.0.9000
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
