@@ -9,15 +9,14 @@ page_lines <- function(page) {
     str_subset('^[:alpha:]')
 }
 
-  # (R[:digit:]{5})               # roster id
 fields_regex <- stringr::regex("
   (^[A-Za-z\\ {1}]+?)           # campus
   [\\ ]+                        # whitespace
-  (\\S+)                        # roster id
+  (\\S{3,7}(?=\\ \\ ))          # roster id
   [\\ ]+                        # whitespace
   ([A-Z\\ \\/{1}]+?(?=\\ \\ ))  # job family, with lookaround
   [\\ ]+                        # whitespace
-  ([A-Z\\ {1}]+?(?=\\ \\ ))     # job title, with lookaround
+  ([A-Z\\ [:punct:][:digit:]]{1,30}(?=\\ ))     # job title, with lookaround
   [\\ ]+                        # whitespace
   ([A-Z\\ [:punct:]{1}]+?)      # department
   [\\ ]+                        # whitespace
@@ -33,34 +32,27 @@ line_fields <- function(line) {
     str_replace("\\$", "") %>%
     str_replace(",", "")
                 
-  tibble(campus     = fields[2],
-         roster.id  = fields[3],
-         job.family = fields[4],
-         job.title  = fields[5],
-         dept       = fields[6],
-         percent    = fields[7],
-         funding    = funding)
+  tibble(campus     = str_trim(fields[2]),
+         roster.id  = str_trim(fields[3]),
+         job.family = str_trim(fields[4]),
+         job.title  = str_trim(fields[5]),
+         dept       = str_trim(fields[6]),
+         percent    = str_trim(fields[7]),
+         funding    = str_trim(funding))
 }
   
 txt <- pdf_text('http://www.cu.edu/doc/fy17-personnel-cu-roster-all-campuses.pdf')
 
-pages <- txt %>% map(page_lines)
+pages <- txt %>% map(page_lines) %>% unlist()
 
-# first line from select pages
-page1   <- pages[[1]][[1]]   # CU Boulder
-page200 <- pages[[200]][[1]] # CU Denver Anschutz
-page295 <- pages[[295]][[1]] # UCCS
-
-page1 %>% line_fields
-page200 %>% line_fields
-page295 %>% line_fields
-
-# cu_personnel <- txt %>%
-#   map(page_lines) %>%
-#   map_df(line_fields) %>%
-#   filter(campus != '' & campus != 'CAMPUS') %>%
-#   mutate(campus = as.factor(campus),
-#          perc = as.numeric(perc),
-#          funding = as.numeric(funding))
-# 
+cu_personnel <- pages %>%
+  map_df(line_fields) %>%
+  mutate(campus     = as.factor(campus),
+         job.family = as.factor(job.family),
+         job.title  = as.factor(job.title),
+         dept       = as.factor(dept),
+         percent    = as.numeric(percent),
+         funding    = as.numeric(funding)) %>%
+  na.omit()
+ 
 # devtools::use_data(cu_personnel)
