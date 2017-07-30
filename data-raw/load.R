@@ -14,7 +14,7 @@ fields_regex <- stringr::regex("
   [\\ ]+                        # whitespace
   (\\S{3,7}(?=\\ \\ ))          # roster id
   [\\ ]+                        # whitespace
-  ([A-Z\\ \\/{1}]+?(?=\\ \\ ))  # job family, with lookaround
+  ([A-Z\\ \\/{1}]+?(?=\\ ))  # job family, with lookaround
   [\\ ]+                        # whitespace
   ([A-Z\\ [:punct:][:digit:]]{1,30}(?=\\ ))     # job title, with lookaround
   [\\ ]+                        # whitespace
@@ -47,12 +47,15 @@ pages <- txt %>% map(page_lines) %>% unlist()
 
 cu_personnel <- pages %>%
   map_df(line_fields) %>%
+  na.omit() %>%
+  # filter out a few (<50) incorrectly parsed rows
+  filter(campus != 'CU') %>%
+  filter(campus != 'System') %>%
   mutate(campus     = as.factor(campus),
          job.family = as.factor(job.family),
          job.title  = as.factor(job.title),
          dept       = as.factor(dept),
          percent    = as.numeric(percent),
-         funding    = as.numeric(funding)) %>%
-  na.omit()
+         funding    = as.numeric(funding))
  
-# devtools::use_data(cu_personnel)
+devtools::use_data(cu_personnel, compress = 'xz')
