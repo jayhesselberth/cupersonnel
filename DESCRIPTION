@@ -10,5 +10,7 @@ LazyData: true
 RoxygenNote: 6.1.0
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    ggridges,
+    cowplot
 VignetteBuilder: knitr
