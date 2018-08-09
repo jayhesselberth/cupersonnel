@@ -35,7 +35,7 @@ library(cowplot)
 library(ggridges)
 
 cu_personnel %>%
-  ggplot(aes(x = funding, y = campus, fill = campus)) +
+  ggplot(aes(x = log10(funding + 1), y = campus, fill = campus)) +
   geom_density_ridges(alpha = 0.4) + 
   scale_fill_brewer(palette = "Set1")
 ```
