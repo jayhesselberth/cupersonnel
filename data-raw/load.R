@@ -32,16 +32,9 @@ pages <- txt %>% map(page_lines) %>% unlist()
 cu_personnel <- pages %>%
   map_df(line_fields) %>%
   na.omit() %>%
-  # filter out a few (<50) incorrectly parsed rows
-  # filter(campus != 'CU') %>%
-  # filter(campus != 'System') %>%
-  mutate(campus     = as.factor(campus),
-         dept.group = as.factor(dept.group),
-         dept       = as.factor(dept),
-         job.family = as.factor(job.family),
-         job.title  = as.factor(job.title),
-         percent    = as.numeric(percent),
-         funding    = as.numeric(funding)
+  mutate(
+    percent = as.numeric(percent),
+    funding = as.numeric(funding)
   )
  
 devtools::use_data(cu_personnel, compress = 'xz', overwrite = TRUE)
