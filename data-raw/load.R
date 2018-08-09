@@ -36,12 +36,12 @@ cu_personnel <- pages %>%
   # filter(campus != 'CU') %>%
   # filter(campus != 'System') %>%
   mutate(campus     = as.factor(campus),
+         dept.group = as.factor(dept.group),
+         dept       = as.factor(dept),
          job.family = as.factor(job.family),
          job.title  = as.factor(job.title),
-         dept       = as.factor(dept),
          percent    = as.numeric(percent),
          funding    = as.numeric(funding)
   )
  
-devtools::use_data(cu_personnel, compress = 'xz')
-
+devtools::use_data(cu_personnel, compress = 'xz', overwrite = TRUE)
