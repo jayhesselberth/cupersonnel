@@ -1,0 +1,33 @@
+---
+title: "CU Salaries"
+author: "Jay Hesselberth"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(cupersonnel)
+library(tidyverse)
+library(cowplot)
+library(ggridges)
+```
+
+# By campus
+
+```{r}
+cu_personnel %>%
+  ggplot(aes(x = funding, y = campus, fill = campus)) +
+  geom_density_ridges(alpha = 0.4) + 
+  scale_fill_brewer(palette = "Set1")
+```
